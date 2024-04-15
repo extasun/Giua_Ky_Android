@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Giua_ki</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="account">Account</string>
+    <string name="cart">cart</string>
+    <string name="order">Order</string>
+    <string name="name">name</string>
+    <string name="price">price</string>
+    <string name="searchItem">Tìm kiếm sản phẩm</string>
+    <string name="home">Trang chủ</string>
+    <string name="trangcanhan">Trang cá nhân</string>
+    <string name="giohang">Giỏ hàng</string>
+    <string name="donhang">Đơn hàng</string>
+    <string name="emptyCart">Giỏ hàng rỗng</string>
+    <string name="gioHang">Giỏ hàng</string>
+    <string name="diaDiemGiaoHang">Địa điểm giao hàng</string>
+    <string name="manthien">97 Man Thiện</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="phone1">0966666666</string>
+    <string name="tomtat">Tóm tắt thanh toán</string>
+    <string name="giatien">Giá tiền</string>
+    <string name="phigiaohang">Phí xử lý và giao hàng</string>
+    <string name="tongThanhToan">Tổng thanh toán</string>
+    <string name="tienMat">Tiền mặt</string>
+    <string name="datHangNgay">Đặt hàng ngay bây giờ</string>
+    <string name="phiGiaoHang">20000</string>
+</resources>

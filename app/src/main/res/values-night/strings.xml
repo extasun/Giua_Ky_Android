@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Giua_ki</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="account">Account</string>
+    <string name="cart">cart</string>
+    <string name="order">Order</string>
+    <string name="name">name</string>
+    <string name="price">price</string>
+    <string name="searchItem">Tìm kiếm sản phẩm</string>
+    <string name="home">Trang chủ</string>
+    <string name="trangcanhan">Trang cá nhân</string>
+    <string name="giohang">Giỏ hàng</string>
+    <string name="donhang">Đơn hàng</string>
+    <string name="emptyCart">Giỏ hàng rỗng</string>
+</resources>

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "805626648978",
+    "firebase_url": "https://mobilegiuaki-default-rtdb.firebaseio.com",
+    "project_id": "mobilegiuaki",
+    "storage_bucket": "mobilegiuaki.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805626648978:android:4cc2f1797d17e3e239494b",
+        "android_client_info": {
+          "package_name": "com.example.giua_ki"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ2hMukfXW0TCQperi1Hd9SrRs9l4feVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

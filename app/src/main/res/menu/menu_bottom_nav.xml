@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/itHome"
+        android:title="@string/home"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/home"/>
+    <item
+        android:id="@+id/itCart"
+        android:title="@string/giohang"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/cart"/>
+    <item
+        android:id="@+id/itOrder"
+        android:title="@string/donhang"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/order"/>
+    <item
+        android:id="@+id/itAccount"
+        app:showAsAction="ifRoom"
+        android:title="@string/trangcanhan"
+        android:icon="@drawable/account"/>
+</menu>
