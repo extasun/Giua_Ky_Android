@@ -20,8 +20,8 @@ public class SizeModel {
         this.size = size;
     }
 
-    public double getPrice() {
-        return price;
+    public int getPrice() {
+        return (int) price;
     }
 
     public void setPrice(double price) {

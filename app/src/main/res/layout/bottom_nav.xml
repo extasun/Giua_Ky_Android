@@ -28,7 +28,6 @@
             android:layout_height="wrap_content"
             app:itemTextColor="@color/color_item_bottom_nav"
             app:itemIconTint="@color/color_item_bottom_nav"
-            app:menu="@menu/menu_bottom_nav"
-            android:backgroundTint="@color/white"/>
+            app:menu="@menu/menu_bottom_nav" />
     </androidx.cardview.widget.CardView>
 </LinearLayout>

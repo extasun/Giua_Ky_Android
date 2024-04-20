@@ -16,10 +16,10 @@ import com.example.giua_ki.model.ProductModel;
 import java.util.List;
 
 public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerViewHolder> {
-    private final List<ProductModel> productList;
+    private final List<String> bannerImages;
 
-    public BannerAdapter(List<ProductModel> productList) {
-        this.productList = productList;
+    public BannerAdapter(List<String> bannerImages) {
+        this.bannerImages = bannerImages;
     }
 
     @NonNull
@@ -29,33 +29,23 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         return new BannerViewHolder(view);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
-        ProductModel product = productList.get(position);
-        Glide.with(holder.itemView.getContext())
-                .load(product.getImageUrl())
-                .into(holder.productImage);
-        holder.productName.setText(product.getName());
-        holder.productDiscount.setText(String.valueOf(50));
+        String imageUrl = bannerImages.get(position);
+        Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imageViewBanner);
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return bannerImages.size();
     }
 
     public static class BannerViewHolder extends RecyclerView.ViewHolder {
-        ImageView productImage;
-        TextView productName;
-        TextView productDiscount;
+        ImageView imageViewBanner;
 
         public BannerViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImage = itemView.findViewById(R.id.banner_product_image);
-            productName = itemView.findViewById(R.id.banner_product_name);
-            productDiscount = itemView.findViewById(R.id.banner_product_discount);
+            imageViewBanner = itemView.findViewById(R.id.banner_product_image);
         }
     }
 }

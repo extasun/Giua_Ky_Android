@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,12 +75,30 @@ public class SizeDialogFragment extends BottomSheetDialogFragment {
                 });
 
         Button btn_add = view.findViewById(R.id.btn_add_product_to_cart);
+        ImageView buttonDecrease= view.findViewById(R.id.buttonDecrease);
+        ImageView buttonIncrease= view.findViewById(R.id.buttonIncrease);
+        TextView textQuantity= view.findViewById(R.id.textQuantity);
+        buttonDecrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(textQuantity.getText().toString());
+            if (quantity > 1) {
+                quantity--;
+                textQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        buttonIncrease.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(textQuantity.getText().toString());
+            quantity++;
+            textQuantity.setText(String.valueOf(quantity));
+        });
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SizeModel selectedSize = sizeAdapter.getSelectedSize();
                 if (selectedSize != null) {
-                    DataHandler.addToCart(product, selectedSize);
+                    int quantity = Integer.parseInt(textQuantity.getText().toString());
+                    Log.d("SizeDialogFragment", "Selected size: " + selectedSize.getSize() + " - Quantity: " + quantity);
+                        DataHandler.addToCart(product, selectedSize,quantity);
                 }
                 PopupDialog dialog = PopupDialog.getInstance(requireContext());
                 dialog.setStyle(Styles.SUCCESS)

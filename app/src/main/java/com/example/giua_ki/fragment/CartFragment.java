@@ -5,16 +5,22 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.giua_ki.R;
-import com.example.giua_ki.adapter.MyCartAdapter;
+import com.example.giua_ki.adapter.CartAdapter;
 import com.example.giua_ki.database.DataHandler;
 import com.example.giua_ki.listener.OnTaskCompleted;
 import com.example.giua_ki.model.CartModel;
@@ -36,6 +42,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
@@ -54,14 +63,16 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
     private TextView tvGiaTien;
     private TextView payment_methods;
     private ImageView ivEllipsis;
-    private ScrollView llBuy;
+    private LinearLayout llBuy;
+    private ScrollView scrollView;
     private RecyclerView recyclerView;
     private Button btnBuy;
     private TextView tvPhiGiaoHang;
     private TextView tvTotalPrice;
     private EditText edtAddress, edtPhone;
     private ImageView ivEditPhone, ivEditAddress;
-    private final MyCartAdapter myCartAdapter = new MyCartAdapter(new ArrayList<>());
+    private boolean isQrSaved = false;
+    private final CartAdapter myCartAdapter = new CartAdapter(new ArrayList<>());
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -71,11 +82,40 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
         setControl(view);
         setRecyclerView();
         setDataForCart();
-        btnBuy.setOnClickListener(v -> thanhToanHoaDon());
         setEdit();
         setElipsis();
+        btnBuy.setOnClickListener(v -> thanhToanHoaDon());
         return view;
     }
+
+    private void setQR(ImageView qrCodeImageView, ImageButton btnSaveQR) {
+        btnSaveQR.setOnClickListener(v -> {
+            if (isQrSaved) {
+                Snackbar.make(v, "QR Code đã được lưu trước đó", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            qrCodeImageView.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(qrCodeImageView.getDrawingCache());
+            qrCodeImageView.setDrawingCacheEnabled(false);
+            try {
+                String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+                OutputStream fOut;
+                File file = new File(path, "QRCodeThanhToan.jpg");
+                fOut = new FileOutputStream(file);
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                fOut.flush();
+                fOut.close();
+                MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+                Snackbar.make(v, "QR Code đã được lưu", Snackbar.LENGTH_LONG).show();
+                isQrSaved = true;
+            } catch (Exception e) {
+                Log.d("QRSave", "QR Code save failed: " + e.getMessage());
+            }
+        });
+    }
+
     @SuppressLint("SetTextI18n")
     public void thanhToanHoaDon() {
         if (payment_methods.getText().equals("Quét mã QR")) {
@@ -85,6 +125,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
             TextView amountTextView = overlayView.findViewById(R.id.amountTextView);
             TextView descriptionTextView = overlayView.findViewById(R.id.descriptionTextView);
             TextView timeTextView=overlayView.findViewById(R.id.timeTextView);
+            ImageButton btnSaveQR = overlayView.findViewById(R.id.btnSaveQR);
             nameTextView.setText("Tên người nhận : Nguyễn Tiến Nhật");
             amountTextView.setText("Số tiền :"+tvTotalPrice.getText());
             descriptionTextView.setText("Mô tả : "+randomDescription);
@@ -93,7 +134,6 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
             String accountNo = "1016010035";
             String amount = String.valueOf(tvTotalPrice.getText());
             String description = "2k";
-
             String imageUrl = "https://img.vietqr.io/image/"
                     + bankId + "-" + accountNo + "-" + "qr_only.png"
                     + "?amount=" + amount
@@ -102,15 +142,16 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
             Glide.with(this)
                     .load(imageUrl)
                     .into(qrCodeImageView);
+            setQR(qrCodeImageView,btnSaveQR);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
             alertDialogBuilder.setView(overlayView);
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-            Button backButton = alertDialog.findViewById(R.id.backButton);
+            ImageButton backButton = alertDialog.findViewById(R.id.backButton);
             if (backButton != null) {
                 backButton.setOnClickListener(view -> alertDialog.dismiss());
             }
-            Button successButton = alertDialog.findViewById(R.id.successButton);
+            ImageButton successButton = alertDialog.findViewById(R.id.successButton);
             assert successButton != null;
             successButton.setOnClickListener(view -> {
                 googleSheetsTask = new GoogleSheetsTask(CartFragment.this);
@@ -121,7 +162,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                     DataHandler.addToOrder(orderId,tvTotalPrice,dateTime,orderModelArrayList);
                     clearCart();
                 }else {
-                    Snackbar.make(view, "Không tồn tại giao dịch", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, "Không tìm thấy giao dịch, hãy kiểm tra kĩ và thử lại !", Snackbar.LENGTH_LONG).show();
                 }
             });
 
@@ -225,7 +266,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
     }
 
     private void setDataForCart() {
-        DataHandler.fetchDataForCart(recyclerView, txtEmptyCart, txtTotalPrice, llBuy, tvGiaTien, tvPhiGiaoHang, tvTotalPrice);
+        DataHandler.fetchDataForCart(recyclerView, txtEmptyCart, txtTotalPrice, scrollView, tvGiaTien, tvPhiGiaoHang, tvTotalPrice,llBuy);
     }
 
     private void setRecyclerView() {
@@ -238,7 +279,8 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
         txtEmptyCart = view.findViewById(R.id.txtEmptyCart);
         txtTotalPrice = view.findViewById(R.id.txtTotalPrice);
         btnBuy = view.findViewById(R.id.btnBuy);
-        llBuy = view.findViewById(R.id.scrollView2);
+        llBuy = view.findViewById(R.id.llBuy);
+        scrollView = view.findViewById(R.id.scrollView);
         tvGiaTien = view.findViewById(R.id.tvGiaTien);
         tvPhiGiaoHang = view.findViewById(R.id.tvPhiGiaoHang);
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
@@ -250,6 +292,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
         ivEllipsis = view.findViewById(R.id.ivEllipsis);
         ivPayment = view.findViewById(R.id.ivPayment);
     }
+
     public void payment_method() {
     final String[] paymentMethods = getResources().getStringArray(R.array.payment_methods);
     AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -300,7 +343,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(String price, String describe) {
         double price1=Double.parseDouble(price);
-        double price2=Double.parseDouble((String) tvTotalPrice.getText());
+        double price2 = Double.parseDouble(tvTotalPrice.getText().toString().replace(",", ""));
         String des=randomDescription;
         des="2k";
         if(price1>=price2&&describe.contains(des)){

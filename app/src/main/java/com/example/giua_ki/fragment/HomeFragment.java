@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,7 +34,6 @@ public class HomeFragment extends Fragment {
     private SearchView searchView;
     private ProductAdapter adapter;
     private RecyclerView recyclerView;
-    private ArrayList<String> categories = new ArrayList<>();
     Handler handler;
     Runnable runnable;
     View view;
@@ -49,24 +49,64 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         searchView = view.findViewById(R.id.svCoffees);
         fetchDataFromFirebase();
-
+        fetchBannerFromFirebase();
+        setSearchView();
         return view;
     }
+
+    private void setSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<ProductModel> filteredList = filter(searchModelList, newText);
+                adapter.updateList(filteredList);
+                recyclerView.setAdapter(adapter);
+                return true;
+            }
+        });
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
     }
-    private void setBanner(View view, List<ProductModel> productModelList) {
+    private void fetchBannerFromFirebase() {
+        List<String> bannerImages = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Banner")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String bannerUrl = snapshot.getValue(String.class);
+                            if (bannerUrl != null) {
+                                bannerImages.add(bannerUrl);
+                            }
+                        }
+                        setBanner(view, bannerImages);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("bannerfb", "Fetch data cancelled: " + databaseError.getMessage());
+                    }
+                });
+    }
+    private void setBanner(View view, List<String> bannerImages) {
         RecyclerView recyclerViewBanner = view.findViewById(R.id.recyclerViewBanner);
         recyclerViewBanner.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        BannerAdapter bannerAdapter = new BannerAdapter(productModelList);
+        BannerAdapter bannerAdapter = new BannerAdapter(bannerImages);
         recyclerViewBanner.setAdapter(bannerAdapter);
         handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (currentProduct >= productModelList.size()) {
+                if (currentProduct >= bannerImages.size()) {
                     currentProduct = 0;
                     recyclerViewBanner.scrollToPosition(currentProduct);
                 } else {
@@ -78,21 +118,14 @@ public class HomeFragment extends Fragment {
         };
         handler.postDelayed(runnable, 3000);
     }
-    private List<ProductModel> discountedProducts() {
-        List<ProductModel> discountedProducts = new ArrayList<>();
-        for (ProductModel product : productModelList) {
-            if (product.getDiscount() > 0) {
-                discountedProducts.add(product);
-            }
-        }
-        return discountedProducts;
-    }
+
     private void fetchDataFromFirebase() {
         FirebaseDatabase.getInstance().getReference("Products")
                 .addValueEventListener(new ValueEventListener() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        productModelList.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ProductModel productModel = snapshot.getValue(ProductModel.class);
                             if (productModel != null) {
@@ -100,28 +133,11 @@ public class HomeFragment extends Fragment {
                                 searchModelList.add(productModel);
                             }
                         }
-                        setBanner(view,productModelList);
-                        Log.d("productModelList", String.valueOf(productModelList.size()));
                         adapter.notifyDataSetChanged();
-
-                        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                            @Override
-                            public boolean onQueryTextSubmit(String query) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange(String newText) {
-                                List<ProductModel> filteredList = filter(searchModelList, newText);
-                                adapter.updateList(filteredList);
-                                recyclerView.setAdapter(adapter);
-                                return true;
-                            }
-                        });
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.d("productsfb", "Fetch data cancelled: " + databaseError.getMessage());
                     }
                 });

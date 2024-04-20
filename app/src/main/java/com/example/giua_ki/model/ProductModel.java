@@ -51,9 +51,11 @@ public class ProductModel implements Serializable {
     }
 
     public int getDiscount() {
-        return 10;
+        return discount;
     }
-
+    public double getFinalPrice() {
+        return price * (1 - discount / 100.0);
+    }
     public void setDiscount(int discount) {
         this.discount = discount;
     }

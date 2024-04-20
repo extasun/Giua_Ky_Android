@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.giua_ki.R;
@@ -36,7 +37,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         SizeModel sizeModel = sizeList.get(position);
         holder.size.setText(sizeModel.getSize());
-        holder.price.setText("+"+ sizeModel.getPrice());
+        holder.price.setText("+"+ sizeModel.getPrice()+"đ");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -47,9 +48,9 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
         });
 
         if (selectedSize == sizeModel) {
-            holder.itemView.setBackgroundColor(Color.GREEN);
+            ((CardView) holder.itemView).setCardBackgroundColor(Color.parseColor("#FF6200EE"));
         } else {
-            holder.itemView.setBackgroundColor(Color.WHITE);
+            ((CardView) holder.itemView).setCardBackgroundColor(Color.WHITE);
         }
     }
 

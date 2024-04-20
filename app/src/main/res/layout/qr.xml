@@ -55,23 +55,37 @@
         android:text="Thời gian chờ"
         android:textSize="14sp" />
     <!-- Button Back -->
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/timeTextView"
-        android:layout_marginTop="16dp"
-        android:layout_alignParentStart="true"
-        android:text="Trở về" />
+        android:orientation="horizontal"
+        android:weightSum="3">
 
-    <!-- Button Success -->
-    <Button
-        android:id="@+id/successButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/timeTextView"
-        android:layout_marginTop="16dp"
-        android:layout_alignParentEnd="true"
-        android:text="Đã thanh toán" />
+        <ImageButton
+            android:src="@drawable/back"
+            android:id="@+id/backButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Trở về" />
+
+        <ImageButton
+            android:src="@drawable/downlod"
+            android:id="@+id/btnSaveQR"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lưư QR" />
+
+        <ImageButton
+            android:src="@drawable/success"
+            android:id="@+id/successButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Đã thanh toán" />
+    </LinearLayout>
+
 
 </RelativeLayout>

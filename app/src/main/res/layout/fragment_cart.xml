@@ -5,26 +5,27 @@
     android:padding="10dp"
     android:background="#838FD3"
     android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/txtCartTitle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="@string/gioHang"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        />
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/txtCartTitle"
         android:layout_above="@id/llBuy">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtCartTitle"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:text="@string/gioHang"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:text="@string/diaDiemGiaoHang" />
 
                     <LinearLayout
@@ -61,6 +63,7 @@
                     </LinearLayout>
                     <TextView
                         android:layout_marginTop="8dp"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/phone" />
@@ -100,6 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tomtat"
+                    android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -193,17 +197,6 @@
                         app:layout_constraintTop_toTopOf="@+id/textView7" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/txtEmptyCart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Giỏ hàng rỗng"
-                android:textSize="18sp" />
-
-
         </LinearLayout>
     </ScrollView>
     <LinearLayout
@@ -255,5 +248,14 @@
             android:backgroundTint="#C67C4E"
             android:text="@string/datHangNgay" />
 </LinearLayout>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txtEmptyCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giỏ hàng rỗng"
+        android:gravity="center"
+        android:layout_below="@+id/txtCartTitle"
+        android:textSize="18sp" />
 
 </RelativeLayout>

@@ -2,7 +2,9 @@ package com.example.giua_ki.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.graphics.Paint;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,9 @@ import com.example.giua_ki.R;
 import com.example.giua_ki.fragment.SizeDialogFragment;
 import com.example.giua_ki.model.ProductModel;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -34,12 +38,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         TextView productName;
         TextView productPrice;
         ImageView productImage;
+        TextView productDiscountPrice;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             productName = itemView.findViewById(R.id.textProductName);
             productPrice = itemView.findViewById(R.id.textProductPrice);
             productImage = itemView.findViewById(R.id.imageProduct);
+            productDiscountPrice = itemView.findViewById(R.id.textProductDiscountPrice);
         }
     }
 
@@ -50,11 +56,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return new ProductViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ProductViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ProductModel product = productList.get(position);
         holder.productName.setText(product.getName());
-        holder.productPrice.setText(String.valueOf(product.getPrice()));
+        NumberFormat vndFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+        if (product.getDiscount() > 0) {
+            holder.productPrice.setPaintFlags(holder.productPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.productPrice.setText(vndFormat.format(product.getPrice()) + "đ");
+            holder.productDiscountPrice.setText(vndFormat.format(product.getPrice() * (1 - product.getDiscount() / 100.0)) + "đ");
+            holder.productDiscountPrice.setVisibility(View.VISIBLE);
+        } else {
+            holder.productPrice.setText(vndFormat.format(product.getPrice()) + "đ");
+            holder.productDiscountPrice.setVisibility(View.GONE);
+        }
         Glide.with(holder.itemView.getContext())
                 .load(product.getImageUrl())
                 .into(holder.productImage);

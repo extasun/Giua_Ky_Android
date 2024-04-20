@@ -3,10 +3,7 @@ package com.example.giua_ki.adapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,19 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.giua_ki.R;
 import com.example.giua_ki.model.CartModel;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartViewHolder> {
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyCartViewHolder> {
     private Context context;
     private List<CartModel> cartModelList;
 
-    public MyCartAdapter(List<CartModel> cartModelList) {
+    public CartAdapter(List<CartModel> cartModelList) {
         this.cartModelList = cartModelList;
     }
 
@@ -54,9 +49,9 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartView
 
         holder.txtName.setText(cartModel.getName());
         NumberFormat vndFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        holder.txtPrice.setText("Giá : " + vndFormat.format(cartModel.getPrice()) + "đ");
+        holder.txtPrice.setText("Giá : " + vndFormat.format(cartModel.getPrice()-cartModel.getSizePrice()) + "đ");
         holder.txtQuantity.setText(String.valueOf(cartModel.getQuantity()));
-        holder.txtSize.setText("Size : " + cartModel.getSize());
+        holder.txtSize.setText("Size : " + cartModel.getSize()+" (+"+vndFormat.format(cartModel.getSizePrice())+"đ)");
         holder.btnMinus.setOnClickListener(v -> minusCartItem(holder, cartModelList.get(position)));
         holder.btnPlus.setOnClickListener(v -> plusCartItem(holder, cartModelList.get(position)));
         holder.btnDel.setOnClickListener(v -> deleteCartItem(holder.itemView.getContext(), cartModelList, holder.getAdapterPosition()));
@@ -72,26 +67,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.MyCartView
         }
     }
 
-    /*@SuppressLint("SuspiciousIndentation")
-    private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
-        if(cartModel.getQuantity()>1) {
-            cartModel.setQuantity(cartModel.getQuantity() - 1);
-            cartModel.setTotalPrice(cartModel.getQuantity() * cartModel.getPrice());
-            holder.txtQuantity.setText(new StringBuffer().append(cartModel.getQuantity()));
-            updateFireBase(cartModel);
-        }else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
-            builder.setTitle("Xóa sản phẩm khỏi giỏ hàng");
-            builder.setMessage("Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?");
-            builder.setPositiveButton("Có", (dialog, which) -> {
-                deleteCartItem(cartModelList, holder.getAdapterPosition());
-            });
-            builder.setNegativeButton("Không", (dialog, which) -> {
 
-            });
-            builder.show();
-        }
-    }*/
     @SuppressLint("SuspiciousIndentation")
 private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
     if (cartModel.getQuantity() > 1) {
@@ -111,17 +87,6 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
         builder.show();
     }
 }
-    /*private void deleteCartItem(List<CartModel> cartModelList, int position) {
-        if (position >= 0 && position < cartModelList.size()) {
-            CartModel cartModel = cartModelList.get(position);
-            FirebaseDatabase.getInstance().getReference("Cart")
-                    .child("UNIQUE_USER_ID")
-                    .child(cartModel.getKey())
-                    .removeValue();
-            cartModelList.remove(position);
-            notifyItemRemoved(position);
-        }
-    }*/
     private void deleteCartItem(Context context, List<CartModel> cartModelList, int position) {
         if (position >= 0 && position < cartModelList.size()) {
             CartModel cartModel = cartModelList.get(position);
@@ -134,14 +99,9 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
             notifyItemRemoved(position);
         }
     }
-    /*private void updateFireBase(CartModel cartModel) {
-        FirebaseDatabase.getInstance().getReference("Cart")
-                .child("UNIQUE_USER_ID")
-                .child(cartModel.getKey())
-                .setValue(cartModel);
-    }*/
+
     private void updateFirebase(CartModel cartModel) {
-    String productID = cartModel.getName() + "_" + cartModel.getSize(); // use both name and size to identify a unique product
+    String productID = cartModel.getName() + "_" + cartModel.getSize();
     FirebaseDatabase.getInstance().getReference("Carts")
             .child("UNIQUE_USER_ID")
             .child(productID)
