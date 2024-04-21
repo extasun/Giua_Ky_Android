@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Giua_ki</string>
+    <string name="app_name">Midterm</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="cart">Cart</string>
@@ -12,7 +12,7 @@
     <string name="giohang">Shopping cart</string>
     <string name="donhang">Order</string>
     <string name="emptyCart">Empty cart</string>
-    <string name="gioHang">Shopping cart</string>
+    <string name="gioHang">Your cart</string>
     <string name="diaDiemGiaoHang">Delivery location</string>
     <string name="manthien">97 Man Thien</string>
     <string name="phone">Phone number</string>
@@ -57,4 +57,9 @@
     <string name="tro_ve">Return</string>
     <string name="luu_qr">Save QR</string>
     <string name="da_thanh_toan">Paid</string>
+    <string name="empty_cart">Empty cart</string>
+    <string name="thay_doi">Change</string>
+    <string name="cach_thanh_toan">PAYMENT METHOD</string>
+    <string name="chi_tiet_don_hang">ORDER DETAILS</string>
+    <string name="don_hang_cua_ban">Your order</string>
 </resources>

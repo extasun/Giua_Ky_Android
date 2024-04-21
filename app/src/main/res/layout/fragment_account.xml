@@ -6,10 +6,4 @@
     android:layout_height="match_parent"
     tools:context=".fragment.AccountFragment">
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/sw_dark_mode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/che_do_toi" />
-
 </LinearLayout>

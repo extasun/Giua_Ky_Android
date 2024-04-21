@@ -57,7 +57,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyCartViewHold
     private void setOnClickListeners(MyCartViewHolder holder, int position) {
         holder.btnMinus.setOnClickListener(v -> minusCartItem(holder, cartModelList.get(position)));
         holder.btnPlus.setOnClickListener(v -> plusCartItem(holder, cartModelList.get(position)));
-        holder.btnDel.setOnClickListener(v -> deleteCartItem(holder.itemView.getContext(), cartModelList, holder.getAdapterPosition()));
     }
     private void plusCartItem(MyCartViewHolder holder, CartModel cartModel) {
         int position = cartModelList.indexOf(cartModel);
@@ -123,7 +122,7 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
     }
 
     public static class MyCartViewHolder extends RecyclerView.ViewHolder {
-        ImageView btnMinus, btnPlus, imageView,btnDel;
+        ImageView btnMinus, btnPlus, imageView;
         TextView txtName, txtPrice, txtQuantity,txtSize;
 
         public MyCartViewHolder(@NonNull View itemView) {
@@ -134,7 +133,6 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
             txtName = itemView.findViewById(R.id.txtName);
             txtPrice = itemView.findViewById(R.id.txtPrice);
             txtQuantity = itemView.findViewById(R.id.txtQuantity);
-            btnDel=itemView.findViewById(R.id.btnDelete);
             txtSize=itemView.findViewById(R.id.txtSize);
         }
     }

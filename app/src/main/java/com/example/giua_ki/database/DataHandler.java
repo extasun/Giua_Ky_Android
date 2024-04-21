@@ -86,10 +86,6 @@ public class DataHandler {
             RecyclerView recyclerView,
             TextView txtEmptyCart,
             TextView txtTotalPrice,
-            ScrollView scrollView,
-            TextView tvGiaTien,
-            TextView tvPhiGiaoHang,
-            TextView tvTotalPrice,
             LinearLayout llBuy
     ) {
     DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Carts");
@@ -107,31 +103,25 @@ public class DataHandler {
                             }
                             orderModelArrayList = cartModelArrayList;
                         }
-                        llBuy.setVisibility(View.VISIBLE);
-                        scrollView.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
                         txtEmptyCart.setVisibility(View.GONE);
+                        llBuy.setVisibility(View.VISIBLE);
                         CartAdapter adapter = (CartAdapter) recyclerView.getAdapter();
                         if (adapter != null) {
                             adapter.updateData(cartModelArrayList);
                         }
 
                     } else {
-                        scrollView.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
-                        txtEmptyCart.setVisibility(View.VISIBLE);
                         llBuy.setVisibility(View.GONE);
+                        txtEmptyCart.setVisibility(View.VISIBLE);
                     }
                     double totalPrice = 0.0;
                     for (CartModel cartModel : cartModelArrayList) {
                         totalPrice += cartModel.getTotalPrice();
                     }
                     NumberFormat vndFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-                    tvGiaTien.setText(vndFormat.format(totalPrice));
-                    tvPhiGiaoHang.setText(vndFormat.format(20000));
-                    totalPrice += 20000;
-                    txtTotalPrice.setText(vndFormat.format(totalPrice));
-                    tvTotalPrice.setText(vndFormat.format(totalPrice) );
+                    txtTotalPrice.setText(vndFormat.format(totalPrice)+"đ");
                 }
 
                 @Override
@@ -139,5 +129,44 @@ public class DataHandler {
                     Log.e("CartFragment", "onCancelled: " + databaseError.getMessage());
                 }
             });
+
 }
+    public static void fetchDataForOrder(
+            RecyclerView recyclerView,
+            TextView txtTotalPrice
+    ) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Carts");
+        databaseReference.child("UNIQUE_USER_ID")
+                .addValueEventListener(new ValueEventListener() {
+                    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ArrayList<CartModel> cartModelArrayList = new ArrayList<>();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                CartModel cartModel = snapshot.getValue(CartModel.class);
+                                if (cartModel != null) {
+                                    cartModelArrayList.add(cartModel);
+                                }
+                                orderModelArrayList = cartModelArrayList;
+                            }
+                            CartAdapter adapter = (CartAdapter) recyclerView.getAdapter();
+                            if (adapter != null) {
+                                adapter.updateData(cartModelArrayList);
+                            }
+                        double totalPrice = 0.0;
+                        for (CartModel cartModel : cartModelArrayList) {
+                            totalPrice += cartModel.getTotalPrice();
+                        }
+                        NumberFormat vndFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+                        totalPrice += 20000;
+                        txtTotalPrice.setText(vndFormat.format(totalPrice));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("CartFragment", "onCancelled: " + databaseError.getMessage());
+                    }
+                });
+
+    }
 }

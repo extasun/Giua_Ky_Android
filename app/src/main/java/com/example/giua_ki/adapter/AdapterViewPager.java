@@ -5,23 +5,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class AdapterViewPager extends FragmentStateAdapter {
-    ArrayList<Fragment> arr;
-    public AdapterViewPager(@NonNull FragmentActivity fragmentActivity, ArrayList<Fragment> arr) {
+    private final List<Fragment> fragments;
+
+    public AdapterViewPager(@NonNull FragmentActivity fragmentActivity, List<Fragment> fragments) {
         super(fragmentActivity);
-        this.arr=arr;
+        this.fragments = fragments;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return arr.get(position);
+        return fragments.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return arr.size();
+        return fragments.size();
     }
 }

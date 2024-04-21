@@ -4,14 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.giua_ki.R;
-import com.example.giua_ki.model.ProductModel;
 
 import java.util.List;
 
@@ -25,14 +23,12 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     @NonNull
     @Override
     public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_banner, parent, false);
-        return new BannerViewHolder(view);
+        return new BannerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_banner, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
-        String imageUrl = bannerImages.get(position);
-        Glide.with(holder.itemView.getContext()).load(imageUrl).into(holder.imageViewBanner);
+        Glide.with(holder.itemView.getContext()).load(bannerImages.get(position)).into(holder.imageViewBanner);
     }
 
     @Override
@@ -41,7 +37,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     }
 
     public static class BannerViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageViewBanner;
+        final ImageView imageViewBanner;
 
         public BannerViewHolder(@NonNull View itemView) {
             super(itemView);

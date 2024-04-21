@@ -57,4 +57,9 @@
     <string name="tro_ve">Trở về</string>
     <string name="luu_qr">Lưư QR</string>
     <string name="da_thanh_toan">Đã thanh toán</string>
+    <string name="empty_cart">Giỏ hàng rỗng</string>
+    <string name="thay_doi">Thay đổi</string>
+    <string name="cach_thanh_toan">CÁCH THANH TOÁN</string>
+    <string name="chi_tiet_don_hang">CHI TIẾT ĐƠN HÀNG</string>
+    <string name="don_hang_cua_ban">Đơn hàng của bạn</string>
 </resources>
