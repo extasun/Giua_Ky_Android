@@ -47,12 +47,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <EditText
+                            android:drawableStart="@drawable/address"
                             android:enabled="false"
                             android:id="@+id/edtAddress"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="9"
-                            android:layout_marginTop="8dp"
                             android:text="@string/manthien"/>
                         <ImageView
                             android:id="@+id/ivEditAddress"
@@ -73,12 +73,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <EditText
+                            android:drawableStart="@drawable/phone"
                             android:enabled="false"
                             android:id="@+id/edtPhone"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="9"
-                            android:layout_marginTop="8dp"
                             android:inputType="phone"
                             android:text="@string/phone1"/>
                         <ImageView

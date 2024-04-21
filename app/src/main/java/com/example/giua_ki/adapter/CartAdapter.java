@@ -22,25 +22,26 @@ import java.util.List;
 import java.util.Locale;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyCartViewHolder> {
-    private Context context;
-    private List<CartModel> cartModelList;
+    private final List<CartModel> cartModelList;
 
     public CartAdapter(List<CartModel> cartModelList) {
         this.cartModelList = cartModelList;
     }
 
-
     @NonNull
     @Override
     public MyCartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cart, parent, false);
-        return new MyCartViewHolder(view);
+        return new MyCartViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cart, parent, false));
     }
 
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull MyCartViewHolder holder, int position) {
         CartModel cartModel = cartModelList.get(position);
+        updateUI(holder, cartModel);
+        setOnClickListeners(holder, position);
+    }
+    @SuppressLint("SetTextI18n")
+    private void updateUI(MyCartViewHolder holder, CartModel cartModel) {
         Glide.with(holder.itemView.getContext())
                 .load(cartModel.getImageUrl())
                 .placeholder(R.drawable.placeholder_image)
@@ -48,10 +49,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyCartViewHold
                 .into(holder.imageView);
 
         holder.txtName.setText(cartModel.getName());
-        NumberFormat vndFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-        holder.txtPrice.setText("Giá : " + vndFormat.format(cartModel.getPrice()-cartModel.getSizePrice()) + "đ");
+        holder.txtPrice.setText(holder.itemView.getContext().getString(R.string.giatxtprice) + NumberFormat.getNumberInstance(Locale.getDefault()).format(cartModel.getPrice()-cartModel.getSizePrice()) + "đ");
         holder.txtQuantity.setText(String.valueOf(cartModel.getQuantity()));
-        holder.txtSize.setText("Size : " + cartModel.getSize()+" (+"+vndFormat.format(cartModel.getSizePrice())+"đ)");
+        holder.txtSize.setText("Size : " + cartModel.getSize()+" (+"+NumberFormat.getNumberInstance(Locale.getDefault()).format(cartModel.getSizePrice())+"đ)");
+    }
+
+    private void setOnClickListeners(MyCartViewHolder holder, int position) {
         holder.btnMinus.setOnClickListener(v -> minusCartItem(holder, cartModelList.get(position)));
         holder.btnPlus.setOnClickListener(v -> plusCartItem(holder, cartModelList.get(position)));
         holder.btnDel.setOnClickListener(v -> deleteCartItem(holder.itemView.getContext(), cartModelList, holder.getAdapterPosition()));
@@ -77,13 +80,13 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
         updateFirebase(cartModel);
     } else {
         AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
-        builder.setTitle("Xóa sản phẩm khỏi giỏ hàng");
-        builder.setMessage("Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?");
-        builder.setPositiveButton("Có", (dialog, which) -> {
+        builder.setTitle(R.string.del_product_cart);
+        builder.setMessage(R.string.confirm_del_product_cart);
+        builder.setPositiveButton(R.string.co, (dialog, which) -> {
             deleteCartItem(holder.itemView.getContext(), cartModelList, holder.getAdapterPosition());
             dialog.dismiss();
         });
-        builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 }
@@ -134,7 +137,5 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
             btnDel=itemView.findViewById(R.id.btnDelete);
             txtSize=itemView.findViewById(R.id.txtSize);
         }
-
-
     }
 }

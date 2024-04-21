@@ -14,7 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 public class OrderFragment extends Fragment {
-    DatabaseReference databaseReference;
     View view;
     public OrderFragment() {
 
@@ -22,13 +21,9 @@ public class OrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("Orders");
         view = inflater.inflate(R.layout.fragment_order, container, false);
-        setControl();
         return view;
     }
 
-    private void setControl() {
-    }
 
 }

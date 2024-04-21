@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewOrder"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="@string/don_hang"
+        android:gravity="center"
+        android:textSize="50sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"/>
 
-        />
 
 </LinearLayout>

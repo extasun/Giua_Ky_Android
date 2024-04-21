@@ -10,10 +10,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/error_image"
-        android:contentDescription="QR Code Image" />
-
-    <!-- Tên -->
+        android:src="@drawable/error_image" />
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
@@ -21,10 +18,8 @@
         android:layout_below="@id/qrImageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Tên Người Nhận"
         android:textSize="18sp" />
 
-    <!-- Số Tiền -->
     <TextView
         android:id="@+id/amountTextView"
         android:layout_width="wrap_content"
@@ -32,10 +27,8 @@
         android:layout_below="@id/nameTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text="Số Tiền: 100,000 VND"
         android:textSize="16sp" />
 
-    <!-- Mô Tả -->
     <TextView
         android:id="@+id/descriptionTextView"
         android:layout_width="wrap_content"
@@ -43,7 +36,6 @@
         android:layout_below="@id/amountTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text="Mô Tả: Thanh toán đơn hàng"
         android:textSize="14sp" />
     <TextView
         android:id="@+id/timeTextView"
@@ -52,9 +44,7 @@
         android:layout_below="@id/descriptionTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text="Thời gian chờ"
         android:textSize="14sp" />
-    <!-- Button Back -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,7 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Trở về" />
+            android:text="@string/tro_ve" />
 
         <ImageButton
             android:src="@drawable/downlod"
@@ -76,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Lưư QR" />
+            android:text="@string/luu_qr" />
 
         <ImageButton
             android:src="@drawable/success"
@@ -84,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Đã thanh toán" />
+            android:text="@string/da_thanh_toan" />
     </LinearLayout>
 
 

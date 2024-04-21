@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn size"
+        android:text="@string/chon_size"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -25,11 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="right">
+        android:layout_gravity="end">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số lượng"
+            android:text="@string/so_luong"
             android:textSize="20sp"/>
         <ImageView
             android:id="@+id/buttonDecrease"
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
+            android:text="@string/_1"
             android:layout_marginStart="20dp"
             android:id="@+id/textQuantity"
             android:textSize="20sp"/>
@@ -59,7 +59,7 @@
         android:id="@+id/btn_add_product_to_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm vào giỏ hàng"
+        android:text="@string/them_gio_hang"
         android:layout_marginTop="16dp"
         android:background="@drawable/btn_add_product"/>
 

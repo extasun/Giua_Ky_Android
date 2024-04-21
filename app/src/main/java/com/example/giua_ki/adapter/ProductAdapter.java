@@ -68,6 +68,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.productDiscountPrice.setText(vndFormat.format(product.getPrice() * (1 - product.getDiscount() / 100.0)) + "đ");
             holder.productDiscountPrice.setVisibility(View.VISIBLE);
         } else {
+            holder.productPrice.setPaintFlags(holder.productPrice.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             holder.productPrice.setText(vndFormat.format(product.getPrice()) + "đ");
             holder.productDiscountPrice.setVisibility(View.GONE);
         }

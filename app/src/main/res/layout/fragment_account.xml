@@ -10,6 +10,6 @@
         android:id="@+id/sw_dark_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dark Mode" />
+        android:text="@string/che_do_toi" />
 
 </LinearLayout>

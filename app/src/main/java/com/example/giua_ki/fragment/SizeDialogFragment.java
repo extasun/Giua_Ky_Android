@@ -97,13 +97,12 @@ public class SizeDialogFragment extends BottomSheetDialogFragment {
                 SizeModel selectedSize = sizeAdapter.getSelectedSize();
                 if (selectedSize != null) {
                     int quantity = Integer.parseInt(textQuantity.getText().toString());
-                    Log.d("SizeDialogFragment", "Selected size: " + selectedSize.getSize() + " - Quantity: " + quantity);
                         DataHandler.addToCart(product, selectedSize,quantity);
                 }
                 PopupDialog dialog = PopupDialog.getInstance(requireContext());
                 dialog.setStyle(Styles.SUCCESS)
-                        .setHeading("Thành công")
-                        .setDescription("Thêm sản phẩm vào giỏ hàng thành công!")
+                        .setHeading(getString(R.string.thanh_cong))
+                        .setDescription(getString(R.string.them_sp_thanh_cong))
                         .showDialog(new OnDialogButtonClickListener() {
                             @Override
                             public void onDismissClicked(Dialog dialog) {

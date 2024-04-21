@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
 
-    private ArrayList<SizeModel> sizeList;
+    private final ArrayList<SizeModel> sizeList;
     private SizeModel selectedSize;
 
     public SizeAdapter(ArrayList<SizeModel> sizeList) {
@@ -48,7 +48,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
         });
 
         if (selectedSize == sizeModel) {
-            ((CardView) holder.itemView).setCardBackgroundColor(Color.parseColor("#FF6200EE"));
+            ((CardView) holder.itemView).setCardBackgroundColor(Color.parseColor(holder.itemView.getContext().getString(R.string.color_selected_size)));
         } else {
             ((CardView) holder.itemView).setCardBackgroundColor(Color.WHITE);
         }

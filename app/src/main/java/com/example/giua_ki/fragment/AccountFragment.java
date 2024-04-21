@@ -17,11 +17,8 @@ import com.example.giua_ki.database.DataHandler;
 
 
 public class AccountFragment extends Fragment {
-    SwitchCompat sw_dark_mode;
-    LinearLayout ll_account;
     View view;
     public AccountFragment() {
-        // Required empty public constructor
     }
 
 
@@ -34,16 +31,6 @@ public class AccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_account, container, false);
-        sw_dark_mode =view.findViewById(R.id.sw_dark_mode);
-        sw_dark_mode.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if(isChecked){
-                AppCompatDelegate.setDefaultNightMode(
-                        AppCompatDelegate.MODE_NIGHT_YES);
-            }else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }));
-      //  DataHandler.addNode();
         return view;
     }
 }

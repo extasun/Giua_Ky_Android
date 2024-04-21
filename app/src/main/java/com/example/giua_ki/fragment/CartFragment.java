@@ -5,12 +5,14 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
@@ -38,9 +42,12 @@ import com.example.giua_ki.database.DataHandler;
 import com.example.giua_ki.listener.OnTaskCompleted;
 import com.example.giua_ki.model.CartModel;
 import com.example.giua_ki.paid.GoogleSheetsTask;
+import com.example.giua_ki.zaloPay.Api.CreateOrder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +55,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+
+import vn.zalopay.sdk.ZaloPayError;
+import vn.zalopay.sdk.ZaloPaySDK;
+import vn.zalopay.sdk.Environment;
+import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class CartFragment extends Fragment implements OnTaskCompleted {
     ArrayList<CartModel> orderModelArrayList;
@@ -88,10 +100,10 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
         return view;
     }
 
-    private void setQR(ImageView qrCodeImageView, ImageButton btnSaveQR) {
+    private void setQrSaved(ImageView qrCodeImageView, ImageButton btnSaveQR) {
         btnSaveQR.setOnClickListener(v -> {
             if (isQrSaved) {
-                Snackbar.make(v, "QR Code đã được lưu trước đó", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.qr_saved, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
@@ -99,7 +111,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
             Bitmap bitmap = Bitmap.createBitmap(qrCodeImageView.getDrawingCache());
             qrCodeImageView.setDrawingCacheEnabled(false);
             try {
-                String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+                String path = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString();
                 OutputStream fOut;
                 File file = new File(path, "QRCodeThanhToan.jpg");
                 fOut = new FileOutputStream(file);
@@ -108,7 +120,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                 fOut.flush();
                 fOut.close();
                 MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
-                Snackbar.make(v, "QR Code đã được lưu", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.qr_save, Snackbar.LENGTH_LONG).show();
                 isQrSaved = true;
             } catch (Exception e) {
                 Log.d("QRSave", "QR Code save failed: " + e.getMessage());
@@ -118,17 +130,16 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
 
     @SuppressLint("SetTextI18n")
     public void thanhToanHoaDon() {
-        if (payment_methods.getText().equals("Quét mã QR")) {
+        if (payment_methods.getText().equals(getString(R.string.scan_qr))) {
             LayoutInflater inflater = LayoutInflater.from(requireActivity());
             View overlayView = inflater.inflate(R.layout.qr, null);
             TextView nameTextView = overlayView.findViewById(R.id.nameTextView);
             TextView amountTextView = overlayView.findViewById(R.id.amountTextView);
             TextView descriptionTextView = overlayView.findViewById(R.id.descriptionTextView);
             TextView timeTextView=overlayView.findViewById(R.id.timeTextView);
-            ImageButton btnSaveQR = overlayView.findViewById(R.id.btnSaveQR);
-            nameTextView.setText("Tên người nhận : Nguyễn Tiến Nhật");
-            amountTextView.setText("Số tiền :"+tvTotalPrice.getText());
-            descriptionTextView.setText("Mô tả : "+randomDescription);
+            nameTextView.setText(R.string.name_host);
+            amountTextView.setText(getString(R.string.price_bank)+tvTotalPrice.getText());
+            descriptionTextView.setText(getString(R.string.note_bank)+randomDescription);
             ImageView qrCodeImageView = overlayView.findViewById(R.id.qrImageView);
             String bankId = "VCB";
             String accountNo = "1016010035";
@@ -142,11 +153,12 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
             Glide.with(this)
                     .load(imageUrl)
                     .into(qrCodeImageView);
-            setQR(qrCodeImageView,btnSaveQR);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
             alertDialogBuilder.setView(overlayView);
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
+            ImageButton btnSaveQR = overlayView.findViewById(R.id.btnSaveQR);
+            setQrSaved(qrCodeImageView,btnSaveQR);
             ImageButton backButton = alertDialog.findViewById(R.id.backButton);
             if (backButton != null) {
                 backButton.setOnClickListener(view -> alertDialog.dismiss());
@@ -162,7 +174,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                     DataHandler.addToOrder(orderId,tvTotalPrice,dateTime,orderModelArrayList);
                     clearCart();
                 }else {
-                    Snackbar.make(view, "Không tìm thấy giao dịch, hãy kiểm tra kĩ và thử lại !", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, R.string.cantfind, Snackbar.LENGTH_LONG).show();
                 }
             });
 
@@ -172,7 +184,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                     long minutes = secondsRemaining / 60;
                     long seconds = secondsRemaining % 60;
                     String timeRemaining = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-                    timeTextView.setText("Thời gian còn lại: " + timeRemaining);
+                    timeTextView.setText(getString(R.string.time_con_lai) + timeRemaining);
 
                 }
 
@@ -180,12 +192,52 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                     alertDialog.dismiss();
                 }
             }.start();
+        }else if (payment_methods.getText().equals("Thanh toán ZaloPay")){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            ZaloPaySDK.init(554, Environment.SANDBOX);
+            try {
+                CreateOrder orderApi = new CreateOrder();
+                JSONObject data = orderApi.createOrder("1000");
+                String code=data.getString("returncode");
+                if (code.equals("1")) {
+                    String token = data.getString("zptranstoken");
+                    ZaloPaySDK.getInstance().payOrder(requireActivity(), token, "demozpdk://app", new PayOrderListener() {
+                        @Override
+                        public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
+                            thongBaoThanhCong();
+                            DataHandler.addToOrder(orderId,tvTotalPrice,dateTime,orderModelArrayList);
+                            clearCart();
+                        }
+
+                        @Override
+                        public void onPaymentCanceled(String s, String s1) {
+                            Toast.makeText(requireActivity(), "Thanh toán bị hủy", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onPaymentError(ZaloPayError zaloPayError, String s, String s1) {
+                            Toast.makeText(requireActivity(), "Thanh toán thất bại", Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+                }
+            }
+            catch (Exception e) {
+               Toast.makeText(requireActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+
         }else{
             thongBaoThanhCong();
             DataHandler.addToOrder(orderId,tvTotalPrice,dateTime,orderModelArrayList);
             clearCart();
         }
 
+    }
+
+    public void handleNewIntent(Intent intent) {
+        ZaloPaySDK.getInstance().onResult(intent);
     }
     public String generateRandomDescription() {
         int descriptionLength = 20;
@@ -226,7 +278,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                     isEditing = true;
                 } else {
                     if (edtAddress.getText().toString().isEmpty()) {
-                        Toast.makeText(getActivity(), "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.nhap_dia_chi, Toast.LENGTH_SHORT).show();
                     } else {
                         edtAddress.setEnabled(false);
                         edtAddress.setFocusable(false);
@@ -251,9 +303,9 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                 } else {
                     String phoneInput = edtPhone.getText().toString();
                     if (phoneInput.isEmpty()) {
-                        Toast.makeText(getActivity(), "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.nhap_phone, Toast.LENGTH_SHORT).show();
                     } else if (!phoneInput.matches("^\\+?[0-9]{10,11}$")) {
-                        Toast.makeText(getActivity(), "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.phone_fail, Toast.LENGTH_SHORT).show();
                     } else {
                         edtPhone.setEnabled(false);
                         edtPhone.setFocusable(false);
@@ -296,7 +348,7 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
     public void payment_method() {
     final String[] paymentMethods = getResources().getStringArray(R.array.payment_methods);
     AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-    builder.setTitle("Chọn phương thức thanh toán");
+    builder.setTitle(R.string.payment_method);
     builder.setItems(paymentMethods, (dialog, which) -> {
         String selectedPaymentMethod = paymentMethods[which];
         payment_methods.setText(selectedPaymentMethod);
@@ -306,6 +358,9 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                 break;
             case "Quét mã QR":
                 ivPayment.setImageResource(R.drawable.qr);
+                break;
+            case "Thanh toán ZaloPay":
+                ivPayment.setImageResource(R.drawable.zalo);
                 break;
             default:
                 break;
@@ -334,9 +389,9 @@ public class CartFragment extends Fragment implements OnTaskCompleted {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.coffee_icon)
-                .setContentTitle("Thanh toán thành công")
-                .setContentText("Đơn hàng của bạn đang được xử lý.")
-                .setContentInfo("Thông tin");
+                .setContentTitle(getString(R.string.thanh_toan_thanh_cong))
+                .setContentText(getString(R.string.don_hang_dang_xu_ly))
+                .setContentInfo(getString(R.string.thong_tin));
 
         notificationManager.notify(1, notificationBuilder.build());
     }

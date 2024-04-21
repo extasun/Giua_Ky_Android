@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Giua_ki</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="account">Account</string>
     <string name="cart">cart</string>
@@ -25,4 +24,37 @@
     <string name="tienMat">Tiền mặt</string>
     <string name="datHangNgay">Đặt hàng ngay bây giờ</string>
     <string name="phiGiaoHang">20000</string>
+    <string name="giatxtprice">"Giá : "</string>
+    <string name="del_product_cart">Xóa sản phẩm khỏi giỏ hàng</string>
+    <string name="confirm_del_product_cart">Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?</string>
+    <string name="co">Có</string>
+    <string name="no">Không</string>
+    <string name="color_selected_size">#FF6200EE</string>
+    <string name="qr_saved">QR Code đã được lưu trước đó</string>
+    <string name="qr_save">QR Code đã được lưu</string>
+    <string name="scan_qr">Quét mã QR</string>
+    <string name="name_host">Tên người nhận : Nguyễn Tiến Nhật</string>
+    <string name="price_bank">Số tiền :</string>
+    <string name="note_bank">"Mô tả : "</string>
+    <string name="cantfind">Không tìm thấy giao dịch, hãy kiểm tra kĩ và thử lại !</string>
+    <string name="time_con_lai">"Thời gian còn lại: "</string>
+    <string name="nhap_dia_chi">Vui lòng nhập địa chỉ</string>
+    <string name="nhap_phone">Vui lòng nhập số điện thoại</string>
+    <string name="phone_fail">Số điện thoại không hợp lệ</string>
+    <string name="payment_method">Chọn phương thức thanh toán</string>
+    <string name="thanh_toan_thanh_cong">Thanh toán thành công</string>
+    <string name="don_hang_dang_xu_ly">Đơn hàng của bạn đang được xử lý.</string>
+    <string name="thong_tin">Thông tin</string>
+    <string name="thanh_cong">Thành công</string>
+    <string name="them_sp_thanh_cong">Thêm sản phẩm vào giỏ hàng thành công!</string>
+    <string name="che_do_toi">Chế độ tối</string>
+    <string name="tim_kiem_ca_phe">Tìm kiếm cà phê</string>
+    <string name="don_hang">Đơn hàng</string>
+    <string name="chon_size">Chọn size</string>
+    <string name="so_luong">Số lượng</string>
+    <string name="_1">1</string>
+    <string name="them_gio_hang">Thêm vào giỏ hàng</string>
+    <string name="tro_ve">Trở về</string>
+    <string name="luu_qr">Lưư QR</string>
+    <string name="da_thanh_toan">Đã thanh toán</string>
 </resources>

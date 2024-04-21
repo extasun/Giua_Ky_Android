@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+
+import vn.zalopay.sdk.ZaloPaySDK;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
@@ -56,32 +59,36 @@ public class MainActivity extends AppCompatActivity {
                 super.onPageSelected(position);
             }
         });
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId()==R.id.itHome){
-                    viewPager2.setCurrentItem(0, true);
-                }
-                if (item.getItemId()==R.id.itCart){
-                    viewPager2.setCurrentItem(1, true);
-                }
-                if (item.getItemId()==R.id.itOrder){
-                    viewPager2.setCurrentItem(2, true);
-                }
-                if (item.getItemId()==R.id.itAccount){
-                    viewPager2.setCurrentItem(3, true);
-                } 
-                return true;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId()==R.id.itHome){
+                viewPager2.setCurrentItem(0, true);
             }
+            if (item.getItemId()==R.id.itCart){
+                viewPager2.setCurrentItem(1, true);
+            }
+            if (item.getItemId()==R.id.itOrder){
+                viewPager2.setCurrentItem(2, true);
+            }
+            if (item.getItemId()==R.id.itAccount){
+                viewPager2.setCurrentItem(3, true);
+            }
+            return true;
         });
         bottomNavigationView.setOnTouchListener((v, event) -> true);
-        bottomNavigationView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isSwipingEnabled = !isSwipingEnabled;
-                viewPager2.setUserInputEnabled(isSwipingEnabled);
-            }
+        bottomNavigationView.setOnClickListener(v -> {
+            isSwipingEnabled = !isSwipingEnabled;
+            viewPager2.setUserInputEnabled(isSwipingEnabled);
         });
     }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
 
+        // Gọi phương thức trong Fragment
+        CartFragment cartFragment = (CartFragment) fragmentArrayList.get(1);
+        if (cartFragment != null) {
+            cartFragment.handleNewIntent(intent);
+        }
+    }
 }
