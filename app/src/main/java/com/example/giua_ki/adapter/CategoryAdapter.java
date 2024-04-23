@@ -19,6 +19,7 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     private final List<CategoryModel> categoryList;
     private final OnCategoryClickListener listener;
+    private static CategoryModel selectedCategory = null;
 
     public CategoryAdapter(List<CategoryModel> categoryList, OnCategoryClickListener listener) {
         this.categoryList = categoryList;
@@ -42,7 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return categoryList.size();
     }
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
+    public class CategoryViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvCategoryName;
 
         public CategoryViewHolder(@NonNull View itemView) {
@@ -52,7 +53,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         public void bind(final CategoryModel category, final OnCategoryClickListener listener) {
             tvCategoryName.setText(category.getName());
-            itemView.setOnClickListener(v -> listener.onCategoryClick(category));
+            if (category.equals(selectedCategory)) {
+                tvCategoryName.setTextColor(Color.RED); // Highlight color
+            } else {
+                tvCategoryName.setTextColor(Color.BLACK); // Normal color
+            }
+            itemView.setOnClickListener(v -> {
+                selectedCategory = category;
+                listener.onCategoryClick(category);
+                notifyDataSetChanged();
+            });
         }
     }
 

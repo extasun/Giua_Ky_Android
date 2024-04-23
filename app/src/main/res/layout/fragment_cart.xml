@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/txtCartTitle"
         android:layout_width="match_parent"
@@ -16,15 +12,15 @@
         android:layout_gravity="center_vertical"
         android:text="@string/gioHang"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="25sp"
+        android:layout_margin="10dp"
         android:layout_alignParentTop="true"
         />
-    </androidx.cardview.widget.CardView>
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/cardView"
+        android:layout_below="@id/txtCartTitle"
         android:layout_above="@id/llBuy">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -89,7 +85,7 @@
         android:visibility="gone"
         android:id="@+id/txtEmptyCart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="@string/empty_cart"
         android:gravity="center"
         android:fontFamily="@font/archivo_black"

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +68,24 @@ public class HomeFragment extends Fragment {
         fetchBannerFromFirebase();
         setSearchView();
         loadCategories();
+        setHello();
         return view;
+    }
+
+    private void setHello() {
+        TextView tvHello = view.findViewById(R.id.tvHello);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (hour >= 5 && hour < 10) {
+            tvHello.setText("Chào buổi sáng, Nhật");
+        } else if (hour >= 10 && hour < 13) {
+            tvHello.setText("Chào buổi trưa, Nhật");
+        } else if (hour >= 13 && hour < 18) {
+            tvHello.setText("Chào buổi chiều, Nhật");
+        } else {
+            tvHello.setText("Chào buổi tối, Nhật");
+        }
     }
 
     private void setSearchView() {

@@ -103,6 +103,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
         setDataForOrder();
         setRecyclerViewOrder();
         setBack();
+        setEdit();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         ivUpdateAddress.setOnClickListener(v -> updateAddressFromLocation());
         ivEditAddress.setOnClickListener(v -> setEdit());
@@ -170,7 +171,6 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
         btnOrder.setOnClickListener(v -> {
             thanhToanHoaDon();
         });
-        setEdit();
         tvChangePayment.setOnClickListener(v -> payment_method());
     }
 

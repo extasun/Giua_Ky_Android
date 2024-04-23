@@ -2,14 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp"
-    android:layout_marginBottom="50dp"
-    android:padding="10dp"
-    >
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    android:layout_margin="10dp">
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="32sp"
@@ -25,16 +18,15 @@
             android:text="@string/don_hang_cua_ban"
             android:textColor="@color/black"
             android:textSize="20sp"
+
             android:layout_alignParentTop="true"
             android:fontFamily="@font/archivo_black"
             />
-    </androidx.cardview.widget.CardView>
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/cardView"
-
+        android:layout_below="@id/txtCartTitle"
         android:layout_above="@id/llBuy">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,6 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/archivo_black"
+                        android:textColor="@color/black"
                         android:text="@string/manthien"/>
                 </LinearLayout>
 
