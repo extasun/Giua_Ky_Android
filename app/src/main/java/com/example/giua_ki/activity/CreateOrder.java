@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,6 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -45,6 +47,7 @@ import com.example.giua_ki.R;
 import com.example.giua_ki.adapter.CartAdapter;
 import com.example.giua_ki.database.DataHandler;
 import com.example.giua_ki.fragment.CartFragment;
+import com.example.giua_ki.fragment.HomeFragment;
 import com.example.giua_ki.listener.OnTaskCompleted;
 import com.example.giua_ki.model.CartModel;
 import com.example.giua_ki.paid.GoogleSheetsTask;
@@ -78,6 +81,10 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
     private GoogleSheetsTask googleSheetsTask;
     String randomDescription;
     String orderId;
+    Button btnSaveQR;
+    Button backButton;
+    Button successButton;
+    ImageView qrCodeImageView;
     private ImageView ivPayment;
     private TextView payment_methods;
     private EditText edtAddress;
@@ -188,32 +195,43 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
 
     }
 
-    private void setQrSaved(ImageView qrCodeImageView, ImageButton btnSaveQR) {
+    private void setQrSaved() {
         btnSaveQR.setOnClickListener(v -> {
-            if (isQrSaved) {
-                Snackbar.make(v, R.string.qr_saved, Snackbar.LENGTH_LONG).show();
-                return;
-            }
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+    if (isQrSaved) {
+        Snackbar.make(v, R.string.qr_saved, Snackbar.LENGTH_LONG).show();
+        return;
+    }
 
-            qrCodeImageView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(qrCodeImageView.getDrawingCache());
-            qrCodeImageView.setDrawingCacheEnabled(false);
-            try {
-                String path = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString();
-                OutputStream fOut;
-                File file = new File(path, "QRCodeThanhToan.jpg");
-                fOut = new FileOutputStream(file);
+    qrCodeImageView.setDrawingCacheEnabled(true);
+    Bitmap bitmap = Bitmap.createBitmap(qrCodeImageView.getDrawingCache());
+    qrCodeImageView.setDrawingCacheEnabled(false);
+    try {
+        String path = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS).toString();
+        OutputStream fOut;
+        File file = new File(path, "QRCodeThanhToan.jpg");
+        fOut = new FileOutputStream(file);
 
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-                fOut.flush();
-                fOut.close();
-                MediaStore.Images.Media.insertImage(this.getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
-                Snackbar.make(v, R.string.qr_save, Snackbar.LENGTH_LONG).show();
-                isQrSaved = true;
-            } catch (Exception e) {
-                Log.d("QRSave", "QR Code save failed: " + e.getMessage());
-            }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+        fOut.flush();
+        fOut.close();
+        MediaStore.Images.Media.insertImage(this.getContentResolver(),file.getAbsolutePath(),file.getName(),file.getName());
+        isQrSaved = true;
+        Snackbar snackbar = Snackbar.make(v, R.string.qr_save, Snackbar.LENGTH_LONG);
+        snackbar.setAction("Xem", view -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "image/*");
+            startActivity(intent);
         });
+        snackbar.show();
+
+    } catch (Exception e) {
+        Log.d("QRSave", "QR Code save failed: " + e.getMessage());
+    }
+});
     }
 
     @SuppressLint("SetTextI18n")
@@ -228,7 +246,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
             nameTextView.setText(R.string.name_host);
             amountTextView.setText(getString(R.string.price_bank)+tvTotalPrice.getText());
             descriptionTextView.setText(getString(R.string.note_bank)+randomDescription);
-            ImageView qrCodeImageView = overlayView.findViewById(R.id.qrImageView);
+            qrCodeImageView = overlayView.findViewById(R.id.qrImageView);
             String bankId = "VCB";
             String accountNo = "1016010035";
             String amount = String.valueOf(tvTotalPrice.getText());
@@ -245,13 +263,13 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
             alertDialogBuilder.setView(overlayView);
             alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-            ImageButton btnSaveQR = overlayView.findViewById(R.id.btnSaveQR);
-            setQrSaved(qrCodeImageView,btnSaveQR);
-            ImageButton backButton = alertDialog.findViewById(R.id.backButton);
+            btnSaveQR = overlayView.findViewById(R.id.btnSaveQR);
+            setQrSaved();
+            backButton = alertDialog.findViewById(R.id.backButton);
             if (backButton != null) {
                 backButton.setOnClickListener(view -> alertDialog.dismiss());
             }
-            ImageButton successButton = alertDialog.findViewById(R.id.successButton);
+            successButton = alertDialog.findViewById(R.id.successButton);
             assert successButton != null;
             successButton.setOnClickListener(view -> {
                 googleSheetsTask = new GoogleSheetsTask(this);
@@ -287,7 +305,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
             ZaloPaySDK.init(554, Environment.SANDBOX);
             try {
                 com.example.giua_ki.zaloPay.Api.CreateOrder orderApi = new com.example.giua_ki.zaloPay.Api.CreateOrder();
-                JSONObject data = orderApi.createOrder("1000");
+                JSONObject data = orderApi.createOrder(tvTotalPrice.getText().toString().replace(".", ""));
                 String code=data.getString("returncode");
                 if (code.equals("1")) {
                     String token = data.getString("zptranstoken");
@@ -428,7 +446,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
     @Override
     public void onTaskCompleted(String price, String describe) {
         double price1=Double.parseDouble(price);
-        double price2 = Double.parseDouble(tvTotalPrice.getText().toString().replace(",", ""));
+        double price2 = Double.parseDouble(tvTotalPrice.getText().toString().replace(".", ""));
         String des=randomDescription;
         des="2k";
         if(price1>=price2&&describe.contains(des)){

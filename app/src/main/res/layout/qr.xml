@@ -49,10 +49,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/timeTextView"
-        android:orientation="horizontal"
-        android:weightSum="3">
+        android:orientation="horizontal">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatButton
             android:src="@drawable/back"
             android:id="@+id/backButton"
             android:layout_width="0dp"
@@ -62,24 +61,24 @@
             android:background="@drawable/rounded_background"
             android:text="@string/tro_ve" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatButton
             android:src="@drawable/downlod"
             android:id="@+id/btnSaveQR"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_background"
             android:text="@string/luu_qr" />
 
-        <ImageButton
-            android:src="@drawable/success"
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/successButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
+            android:layout_weight="1"
             android:background="@drawable/rounded_background"
+            android:src="@drawable/success"
             android:text="@string/da_thanh_toan" />
     </LinearLayout>
 

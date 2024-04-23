@@ -27,7 +27,6 @@ import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -41,50 +40,57 @@ public class HomeFragment extends Fragment {
     private final ArrayList<ProductModel> searchModelList = new ArrayList<>();
     private SearchView searchView;
     private ProductAdapter adapter;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewProducts;
     private RecyclerView recyclerViewCategory;
     private CategoryModel currentCategory = null;
     private CategoryAdapter adapterCategory = null;
-    Handler handler;
-    Runnable runnable;
-    View view;
+    private Handler handler;
+    private Runnable runnable;
+    private View view;
     private int currentProduct = 0;
+    private TextView tvHello;
+    private RecyclerView recyclerViewBanner;
 
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        recyclerView = view.findViewById(R.id.recyclerViewProducts);
-        recyclerViewCategory = view.findViewById(R.id.recyclerViewCategory);
-        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
-        layoutManager.setFlexDirection(FlexDirection.ROW);
-        layoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
-        recyclerViewCategory.setLayoutManager(layoutManager);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        adapter = new ProductAdapter(productModelList);
-        recyclerView.setAdapter(adapter);
-        searchView = view.findViewById(R.id.svCoffees);
+        setControl();
         fetchDataFromFirebase();
         fetchBannerFromFirebase();
         setSearchView();
         loadCategories();
         setHello();
+        setRecyclerViewProducts();
         return view;
     }
 
+    private void setRecyclerViewProducts() {
+        recyclerViewProducts.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        adapter = new ProductAdapter(productModelList);
+        recyclerViewProducts.setAdapter(adapter);
+    }
+
+    private void setControl() {
+        recyclerViewProducts = view.findViewById(R.id.recyclerViewProducts);
+        recyclerViewCategory = view.findViewById(R.id.recyclerViewCategory);
+        searchView = view.findViewById(R.id.svCoffees);
+        tvHello = view.findViewById(R.id.tvHello);
+        recyclerViewBanner = view.findViewById(R.id.recyclerViewBanner);
+    }
+
     private void setHello() {
-        TextView tvHello = view.findViewById(R.id.tvHello);
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
 
         if (hour >= 5 && hour < 10) {
-            tvHello.setText("Chào buổi sáng, Nhật");
+            tvHello.setText(R.string.goodmorning);
         } else if (hour >= 10 && hour < 13) {
-            tvHello.setText("Chào buổi trưa, Nhật");
+            tvHello.setText(R.string.goodluch);
         } else if (hour >= 13 && hour < 18) {
-            tvHello.setText("Chào buổi chiều, Nhật");
+            tvHello.setText(R.string.goodafternoon);
         } else {
-            tvHello.setText("Chào buổi tối, Nhật");
+            tvHello.setText(R.string.goodnight);
         }
     }
 
@@ -99,7 +105,7 @@ public class HomeFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 List<ProductModel> filteredList = filter(searchModelList, newText);
                 adapter.updateList(filteredList);
-                recyclerView.setAdapter(adapter);
+                recyclerViewProducts.setAdapter(adapter);
                 return true;
             }
         });
@@ -115,26 +121,25 @@ public class HomeFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference("Banner")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String bannerUrl = snapshot.getValue(String.class);
                             if (bannerUrl != null) {
                                 bannerImages.add(bannerUrl);
                             }
                         }
-                        setBanner(view, bannerImages);
+                        setBanner(bannerImages);
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.d("bannerfb", "Fetch data cancelled: " + databaseError.getMessage());
                     }
                 });
     }
-    private void setBanner(View view, List<String> bannerImages) {
-        RecyclerView recyclerViewBanner = view.findViewById(R.id.recyclerViewBanner);
-        recyclerViewBanner.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+    private void setBanner(List<String> bannerImages) {
         BannerAdapter bannerAdapter = new BannerAdapter(bannerImages);
+        recyclerViewBanner.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerViewBanner.setAdapter(bannerAdapter);
         handler = new Handler();
         runnable = new Runnable() {
@@ -189,8 +194,13 @@ public class HomeFragment extends Fragment {
         return filteredList;
     }
     private void loadCategories() {
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
+        recyclerViewCategory.setLayoutManager(layoutManager);
         FirebaseDatabase.getInstance().getReference("Categories")
                 .addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         List<CategoryModel> categoryList = new ArrayList<>();
@@ -217,6 +227,7 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void filterProducts(CategoryModel selectedCategory) {
         List<ProductModel> filteredList = new ArrayList<>();
         for (ProductModel product : productModelList) {
