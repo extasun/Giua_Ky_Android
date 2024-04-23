@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 public class DataHandler {
     public static ArrayList<CartModel> orderModelArrayList = new ArrayList<>();
-
+    public static int CartItemCount = 0;
     public static void addToOrder(String orderId, TextView orderTotalPrice, String dateTime, ArrayList<CartModel> s) {
         DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
         String orderKey = ordersRef.push().getKey();
@@ -81,6 +80,30 @@ public class DataHandler {
                         Log.e("CartHandler", "addToCart onCancelled: " + error.getMessage());
                     }
                 });
+    }
+    public static void countItemsInCart(CartItemCountCallback callback) {
+        DatabaseReference cartReference = FirebaseDatabase.getInstance().getReference("Carts").child("UNIQUE_USER_ID");
+        cartReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int cartItemCount = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    CartModel cartModel = snapshot.getValue(CartModel.class);
+                    if (cartModel != null) {
+                        cartItemCount += cartModel.getQuantity();
+                    }
+                }
+                callback.onCartItemCount(cartItemCount);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("DataHandler", "countItemsInCart onCancelled: " + databaseError.getMessage());
+            }
+        });
+    }
+    public interface CartItemCountCallback {
+        void onCartItemCount(int count);
     }
     public static void fetchDataForCart(
             RecyclerView recyclerView,

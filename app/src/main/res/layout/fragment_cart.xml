@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="#838FD3"
     android:layout_height="match_parent">
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -13,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:fontFamily="@font/archivo_black"
         android:layout_gravity="center_vertical"
         android:text="@string/gioHang"
         android:textColor="@color/black"
@@ -52,6 +52,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -59,6 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="8"
                 android:text="@string/tongThanhToan"
+                android:textColor="@color/black"
+                android:fontFamily="@font/archivo_black"
                 android:textSize="18sp" />
 
             <TextView
@@ -67,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@string/giatien"
+                android:fontFamily="@font/archivo_black"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -76,9 +80,11 @@
             android:id="@+id/btnCreateOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_tab_1"
+            android:background="@drawable/rounded_rectangle"
+            android:backgroundTint="#846046"
+            android:layout_margin="10dp"
             android:text="@string/datHangNgay" />
-</LinearLayout>
+    </LinearLayout>
     <TextView
         android:visibility="gone"
         android:id="@+id/txtEmptyCart"
@@ -86,6 +92,7 @@
         android:layout_height="wrap_content"
         android:text="@string/empty_cart"
         android:gravity="center"
+        android:fontFamily="@font/archivo_black"
         android:layout_below="@+id/cardView"
         android:textSize="18sp" />
 

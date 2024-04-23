@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:layout_marginTop="50dp"
     android:layout_marginBottom="50dp"
+    android:padding="10dp"
     >
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -26,6 +26,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_alignParentTop="true"
+            android:fontFamily="@font/archivo_black"
             />
     </androidx.cardview.widget.CardView>
     <ScrollView
@@ -33,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cardView"
+
         android:layout_above="@id/llBuy">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,11 +44,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
+                    android:layout_marginTop="20dp"
                     android:layout_height="match_parent">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:background="@color/colorGrey" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -56,33 +55,39 @@
                             android:layout_height="match_parent"
                             android:layout_weight="9"
                             android:textColor="@color/black"
-                            android:textSize="25sp"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/archivo_black"
                             android:text="@string/diaDiemGiaoHang" />
+                        <ImageView
+                            android:id="@+id/ivUpdateAddress"
+                            android:layout_width="0dp"
+                            android:layout_height="32dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/location_refresh" />
                         <ImageView
                             android:id="@+id/ivEditAddress"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="32dp"
                             android:layout_weight="1"
-                            android:src="@drawable/edit"/>
+                            android:src="@drawable/edit" />
                     </LinearLayout>
                     <EditText
                         android:enabled="false"
                         android:id="@+id/edtAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/archivo_black"
                         android:text="@string/manthien"/>
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/colorGrey" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/chi_tiet_don_hang"
+                    android:fontFamily="@font/archivo_black"
                     android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:layout_marginTop="20dp"
+                    android:textSize="20sp" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewOrder"
                     android:layout_width="match_parent"
@@ -94,6 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
                     android:padding="12dp">
                     <TextView
                         android:layout_width="0dp"
@@ -109,39 +115,41 @@
                         android:text="@string/phiGiaoHang" />
 
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="10dp"
-                    android:background="@color/colorGrey" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="8"
                         android:text="@string/cach_thanh_toan"
                         android:textColor="@color/black"
-                        android:textSize="25sp" />
+                        android:fontFamily="@font/archivo_black"
+                        android:textSize="20sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/thay_doi"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/archivo_black"
                         android:id="@+id/tvChangePayment"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="12dp"
-                        android:textColor="#3094C1"/>
+                        android:textColor="#826045"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:orientation="horizontal">
                     <ImageView
                         android:id="@+id/ivPayment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/cash" />
                     <TextView
@@ -150,6 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:textSize="20sp"
+                        android:fontFamily="@font/archivo_black"
                         android:text="@string/tienMat" />
                 </LinearLayout>
 
@@ -176,6 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="8"
                     android:text="@string/tongThanhToan"
+                    android:fontFamily="@font/archivo_black"
                     android:textSize="18sp" />
 
                 <TextView
@@ -185,6 +195,7 @@
                     android:gravity="end"
                     android:text="@string/phiGiaoHang"
                     android:textColor="@color/black"
+                    android:fontFamily="@font/archivo_black"
                     android:textSize="18sp" />
             </LinearLayout>
         </LinearLayout>
@@ -193,7 +204,10 @@
             android:id="@+id/btnOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_tab_1"
+            android:background="@drawable/rounded_rectangle"
+            android:backgroundTint="#846046"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/archivo_black"
             android:text="@string/datHangNgay" />
     </LinearLayout>
 </RelativeLayout>

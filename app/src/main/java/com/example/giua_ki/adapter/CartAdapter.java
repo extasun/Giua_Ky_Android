@@ -82,14 +82,14 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
         builder.setTitle(R.string.del_product_cart);
         builder.setMessage(R.string.confirm_del_product_cart);
         builder.setPositiveButton(R.string.co, (dialog, which) -> {
-            deleteCartItem(holder.itemView.getContext(), cartModelList, holder.getAdapterPosition());
+            deleteCartItem(cartModelList, holder.getAdapterPosition());
             dialog.dismiss();
         });
         builder.setNegativeButton(R.string.no, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
 }
-    private void deleteCartItem(Context context, List<CartModel> cartModelList, int position) {
+    public void deleteCartItem(List<CartModel> cartModelList, int position) {
         if (position >= 0 && position < cartModelList.size()) {
             CartModel cartModel = cartModelList.get(position);
             String productID = cartModel.getName() + "_" + cartModel.getSize();
@@ -120,6 +120,7 @@ private void minusCartItem(MyCartViewHolder holder, CartModel cartModel) {
         cartModelList.addAll(newList);
         notifyDataSetChanged();
     }
+
 
     public static class MyCartViewHolder extends RecyclerView.ViewHolder {
         ImageView btnMinus, btnPlus, imageView;

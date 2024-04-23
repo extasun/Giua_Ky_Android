@@ -17,10 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.giua_ki.R;
 import com.example.giua_ki.adapter.BannerAdapter;
+import com.example.giua_ki.adapter.CategoryAdapter;
 import com.example.giua_ki.adapter.ProductAdapter;
+import com.example.giua_ki.model.CategoryModel;
 import com.example.giua_ki.model.ProductModel;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -34,6 +40,9 @@ public class HomeFragment extends Fragment {
     private SearchView searchView;
     private ProductAdapter adapter;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerViewCategory;
+    private CategoryModel currentCategory = null;
+    private CategoryAdapter adapterCategory = null;
     Handler handler;
     Runnable runnable;
     View view;
@@ -44,6 +53,11 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewProducts);
+        recyclerViewCategory = view.findViewById(R.id.recyclerViewCategory);
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getActivity());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
+        recyclerViewCategory.setLayoutManager(layoutManager);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         adapter = new ProductAdapter(productModelList);
         recyclerView.setAdapter(adapter);
@@ -51,6 +65,7 @@ public class HomeFragment extends Fragment {
         fetchDataFromFirebase();
         fetchBannerFromFirebase();
         setSearchView();
+        loadCategories();
         return view;
     }
 
@@ -153,5 +168,44 @@ public class HomeFragment extends Fragment {
             }
         }
         return filteredList;
+    }
+    private void loadCategories() {
+        FirebaseDatabase.getInstance().getReference("Categories")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<CategoryModel> categoryList = new ArrayList<>();
+                        for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                            CategoryModel category = categorySnapshot.getValue(CategoryModel.class);
+                            categoryList.add(category);
+                        }
+                        adapterCategory = new CategoryAdapter(categoryList, selectedCategory -> {
+                            currentCategory = selectedCategory;
+                            if (currentCategory.getName().equals("All")) {
+                                adapter.updateList(productModelList);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                filterProducts(currentCategory);
+                            }
+                            adapterCategory.notifyDataSetChanged();
+                        });
+                        recyclerViewCategory.setAdapter(adapterCategory);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle error
+                    }
+                });
+    }
+    private void filterProducts(CategoryModel selectedCategory) {
+        List<ProductModel> filteredList = new ArrayList<>();
+        for (ProductModel product : productModelList) {
+            if (product.getCategory() != null && selectedCategory.getName() != null && product.getCategory().equals(selectedCategory.getName())) {
+                filteredList.add(product);
+            }
+        }
+        adapter.updateList(filteredList);
+        adapter.notifyDataSetChanged();
     }
 }

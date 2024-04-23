@@ -13,7 +13,7 @@
     <string name="donhang">Đơn hàng</string>
     <string name="emptyCart">Giỏ hàng rỗng</string>
     <string name="gioHang">Giỏ hàng của bạn</string>
-    <string name="diaDiemGiaoHang">GIAO TỚI ĐỊA CHỈ</string>
+    <string name="diaDiemGiaoHang">Địa chỉ nhận hàng</string>
     <string name="manthien">97 Man Thiện</string>
     <string name="phone">Số điện thoại</string>
     <string name="phone1">0966666666</string>
@@ -29,7 +29,7 @@
     <string name="confirm_del_product_cart">Bạn có chắc chắn muốn xóa sản phẩm khỏi giỏ hàng?</string>
     <string name="co">Có</string>
     <string name="no">Không</string>
-    <string name="color_selected_size">#FF6200EE</string>
+    <string name="color_selected_size">#94a3b8</string>
     <string name="qr_saved">QR Code đã được lưu trước đó</string>
     <string name="qr_save">QR Code đã được lưu</string>
     <string name="scan_qr">Quét mã QR</string>
@@ -59,7 +59,9 @@
     <string name="da_thanh_toan">Đã thanh toán</string>
     <string name="empty_cart">Giỏ hàng rỗng</string>
     <string name="thay_doi">Thay đổi</string>
-    <string name="cach_thanh_toan">CÁCH THANH TOÁN</string>
-    <string name="chi_tiet_don_hang">CHI TIẾT ĐƠN HÀNG</string>
+    <string name="cach_thanh_toan">Phương thức thanh toán</string>
+    <string name="chi_tiet_don_hang">Chi tiết đơn hàng</string>
     <string name="don_hang_cua_ban">Đơn hàng của bạn</string>
+    <string name="chon_size_khi_them_vao_cart">Chọn Size trước khi thêm vào giỏ hàng</string>
+    <string name="them_vao_cart_thanh_cong">Đã thêm sản phẩm vào giỏ hàng</string>
 </resources>

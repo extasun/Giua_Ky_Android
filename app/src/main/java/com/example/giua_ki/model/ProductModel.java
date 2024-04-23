@@ -8,15 +8,17 @@ public class ProductModel implements Serializable {
     private int price;
     private String imageUrl;
     private int discount;
+    private String category;
 
     public ProductModel() {
     }
 
-    public ProductModel(String name, int price, String imageUrl, int discount) {
+    public ProductModel(String name, int price, String imageUrl, int discount, String category) {
         this.name = name;
         this.price = price;
         this.imageUrl = imageUrl;
         this.discount = discount;
+        this.category = category;
     }
 
     public String getKey() {
@@ -58,5 +60,13 @@ public class ProductModel implements Serializable {
     }
     public void setDiscount(int discount) {
         this.discount = discount;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -1,15 +1,22 @@
 package com.example.giua_ki.fragment;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,7 +27,9 @@ import com.example.giua_ki.adapter.SizeAdapter;
 import com.example.giua_ki.database.DataHandler;
 import com.example.giua_ki.model.ProductModel;
 import com.example.giua_ki.model.SizeModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -91,26 +100,15 @@ public class SizeDialogFragment extends BottomSheetDialogFragment {
             quantity++;
             textQuantity.setText(String.valueOf(quantity));
         });
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SizeModel selectedSize = sizeAdapter.getSelectedSize();
-                if (selectedSize != null) {
-                    int quantity = Integer.parseInt(textQuantity.getText().toString());
-                        DataHandler.addToCart(product, selectedSize,quantity);
-                }
-                PopupDialog dialog = PopupDialog.getInstance(requireContext());
-                dialog.setStyle(Styles.SUCCESS)
-                        .setHeading(getString(R.string.thanh_cong))
-                        .setDescription(getString(R.string.them_sp_thanh_cong))
-                        .showDialog(new OnDialogButtonClickListener() {
-                            @Override
-                            public void onDismissClicked(Dialog dialog) {
-                                super.onDismissClicked(dialog);
-                            }
-                        });
-                new Handler().postDelayed(dialog::dismissDialog, 1500);
-                dismiss();
+        btn_add.setOnClickListener(v -> {
+            SizeModel selectedSize = sizeAdapter.getSelectedSize();
+            if (selectedSize != null) {
+            int quantity = Integer.parseInt(textQuantity.getText().toString());
+            DataHandler.addToCart(product, selectedSize,quantity);
+            dismiss();
+            Toast.makeText(getContext(), R.string.them_vao_cart_thanh_cong, Toast.LENGTH_SHORT).show();
+        }else{
+                Toast.makeText(getContext(), R.string.chon_size_khi_them_vao_cart, Toast.LENGTH_SHORT).show();
             }
         });
     }

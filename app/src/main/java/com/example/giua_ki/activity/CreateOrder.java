@@ -1,13 +1,16 @@
 package com.example.giua_ki.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -33,6 +37,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.giua_ki.R;
 import com.example.giua_ki.adapter.CartAdapter;
@@ -41,10 +48,14 @@ import com.example.giua_ki.fragment.CartFragment;
 import com.example.giua_ki.listener.OnTaskCompleted;
 import com.example.giua_ki.model.CartModel;
 import com.example.giua_ki.paid.GoogleSheetsTask;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -70,13 +81,16 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
     private ImageView ivPayment;
     private TextView payment_methods;
     private EditText edtAddress;
+    private ImageView  ivUpdateAddress;
     private ImageView  ivEditAddress;
+
     private boolean isQrSaved = false;
     private TextView tvTotalPrice;
     private Button btnOrder;
     private TextView tvChangePayment;
     private RecyclerView recyclerViewOrder;
     private ImageView ivBack;
+    private FusedLocationProviderClient fusedLocationClient;
     private final CartAdapter myCartAdapter = new CartAdapter(DataHandler.orderModelArrayList);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +103,54 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
         setDataForOrder();
         setRecyclerViewOrder();
         setBack();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        ivUpdateAddress.setOnClickListener(v -> updateAddressFromLocation());
+        ivEditAddress.setOnClickListener(v -> setEdit());
     }
 
+    private void updateAddressFromLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            getAddressFromCoordinates(location.getLatitude(), location.getLongitude());
+                        }
+                    }
+                });
+    }
+    private void getAddressFromCoordinates(double latitude, double longitude) {
+        String url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + latitude + "&lon=" + longitude;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, response -> {
+                    try {
+                        JSONObject addressObject = response.getJSONObject("address");
+                        String road = addressObject.getString("road");
+                        String quarter = addressObject.optString("quarter", "");
+                        String suburb = addressObject.optString("suburb", "");
+                        String city = addressObject.getString("city");
+                        String address = road;
+                        if (!quarter.isEmpty()) {
+                            address += ", " + quarter;
+                        }
+                        if (!suburb.isEmpty()) {
+                            address += ", " + suburb;
+                        }
+                        address += ", " + city;
+                        edtAddress.setText(address);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }, error -> Log.d("Error.Response", String.valueOf(error)));
+
+        Volley.newRequestQueue(this).add(jsonObjectRequest);
+    }
     private void setBack() {
         ivBack.setOnClickListener(v -> {
             finish();
@@ -117,6 +177,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
     private void setControl() {
         edtAddress = findViewById(R.id.edtAddress);
         ivEditAddress = findViewById(R.id.ivEditAddress);
+        ivUpdateAddress = findViewById(R.id.ivUpdateAddress);
         payment_methods = findViewById(R.id.payment_methods);
         ivPayment = findViewById(R.id.ivPayment);
         tvTotalPrice = findViewById(R.id.txtTotalPrice);
@@ -124,6 +185,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
         tvChangePayment = findViewById(R.id.tvChangePayment);
         recyclerViewOrder = findViewById(R.id.recyclerViewOrder);
         ivBack = findViewById(R.id.ivBack);
+
     }
 
     private void setQrSaved(ImageView qrCodeImageView, ImageButton btnSaveQR) {
@@ -325,7 +387,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
                     ivPayment.setImageResource(R.drawable.cash);
                     break;
                 case "Quét mã QR":
-                    ivPayment.setImageResource(R.drawable.qr);
+                    ivPayment.setImageResource(R.drawable.qrcode);
                     break;
                 case "Thanh toán ZaloPay":
                     ivPayment.setImageResource(R.drawable.zalo);

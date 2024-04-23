@@ -61,6 +61,8 @@
         android:layout_height="wrap_content"
         android:text="@string/them_gio_hang"
         android:layout_marginTop="16dp"
-        android:background="@drawable/btn_add_product"/>
+        android:background="@drawable/rounded_rectangle"
+        android:backgroundTint="#846046"
+        android:layout_margin="10dp"/>
 
 </LinearLayout>
