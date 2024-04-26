@@ -140,6 +140,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
                     try {
                         JSONObject addressObject = response.getJSONObject("address");
                         String road = addressObject.getString("road");
+                 //       String houseNumber = addressObject.optString("house_number", "");
                         String quarter = addressObject.optString("quarter", "");
                         String suburb = addressObject.optString("suburb", "");
                         String city = addressObject.getString("city");
@@ -154,9 +155,12 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
                         edtAddress.setText(address);
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast.makeText(CreateOrder.this, "Không thể lấy địa chỉ", Toast.LENGTH_SHORT).show();
                     }
-                }, error -> Log.d("Error.Response", String.valueOf(error)));
-
+                }, error -> {
+                    Log.d("Error.Response", String.valueOf(error));
+                    Toast.makeText(CreateOrder.this, "Không thể lấy địa chỉ", Toast.LENGTH_SHORT).show();
+                });
         Volley.newRequestQueue(this).add(jsonObjectRequest);
     }
     private void setBack() {
@@ -250,7 +254,7 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
             String bankId = "VCB";
             String accountNo = "1016010035";
             String amount = String.valueOf(tvTotalPrice.getText());
-            String description = "2k";
+            String description = randomDescription;
             String imageUrl = "https://img.vietqr.io/image/"
                     + bankId + "-" + accountNo + "-" + "qr_only.png"
                     + "?amount=" + amount
@@ -448,7 +452,6 @@ public class CreateOrder extends AppCompatActivity implements OnTaskCompleted {
         double price1=Double.parseDouble(price);
         double price2 = Double.parseDouble(tvTotalPrice.getText().toString().replace(".", ""));
         String des=randomDescription;
-        des="2k";
         if(price1>=price2&&describe.contains(des)){
             trangThai=1;
         }

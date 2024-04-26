@@ -41,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private void setUpBadge() {
         BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.itCart);
         DataHandler.countItemsInCart(count -> {
-            badgeDrawable.setNumber(count);
-            badgeDrawable.setVisible(true   );
+            if (count > 0) {
+                badgeDrawable.setNumber(count);
+                badgeDrawable.setVisible(true);
+            } else {
+                badgeDrawable.setVisible(false);
+            }
         });
     }
 

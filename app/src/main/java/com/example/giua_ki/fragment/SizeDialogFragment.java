@@ -110,45 +110,45 @@ public class SizeDialogFragment extends BottomSheetDialogFragment {
         btn_add.setOnClickListener(v -> {
             SizeModel selectedSize = sizeAdapter.getSelectedSize();
             if (selectedSize != null) {
-            int quantity = Integer.parseInt(textQuantity.getText().toString());
-            DataHandler.addToCart(product, selectedSize,quantity);
-            dismiss();
-            thongBaoThanhCong();
-        }else{
+                int quantity = Integer.parseInt(textQuantity.getText().toString());
+                DataHandler.addToCart(product, selectedSize,quantity);
+                dismiss();
+                thongBaoThanhCong();
+            }else{
                 Toast.makeText(getContext(), R.string.chon_size_khi_them_vao_cart, Toast.LENGTH_SHORT).show();
             }
         });
     }
     public void thongBaoThanhCong() {
-    NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-    String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
-    int notificationId = 1; // Định danh duy nhất cho mỗi thông báo
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+        int notificationId = 1; // Định danh duy nhất cho mỗi thông báo
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-        notificationChannel.setDescription("Channel description");
-        notificationChannel.enableLights(true);
-        notificationChannel.setLightColor(Color.RED);
-        notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-        notificationChannel.enableVibration(true);
-        notificationManager.createNotificationChannel(notificationChannel);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity(), NOTIFICATION_CHANNEL_ID);
+
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.coffee_icon)
+                .setContentTitle("Thêm thành công")
+                .setContentText("Sản phẩm đã được thêm vào giỏ hàng của bạn")
+                .setContentInfo(getString(R.string.thong_tin));
+
+        notificationManager.notify(notificationId, notificationBuilder.build());
+        Handler handler = new Handler();
+        long delayInMilliseconds = 300;
+        handler.postDelayed(() -> notificationManager.cancel(notificationId), delayInMilliseconds);
     }
-
-    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity(), NOTIFICATION_CHANNEL_ID);
-
-    notificationBuilder.setAutoCancel(true)
-            .setDefaults(Notification.DEFAULT_ALL)
-            .setWhen(System.currentTimeMillis())
-            .setSmallIcon(R.drawable.coffee_icon)
-            .setContentTitle("Thêm thành công")
-            .setContentText("Sản phẩm đã được thêm vào giỏ hàng của bạn")
-            .setContentInfo(getString(R.string.thong_tin));
-
-    notificationManager.notify(notificationId, notificationBuilder.build());
-    Handler handler = new Handler();
-    long delayInMilliseconds = 300;
-    handler.postDelayed(() -> notificationManager.cancel(notificationId), delayInMilliseconds);
-}
     public static SizeDialogFragment newInstance(ProductModel product) {
         SizeDialogFragment fragment = new SizeDialogFragment();
         Bundle args = new Bundle();
